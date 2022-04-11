@@ -10,18 +10,27 @@ const TAX_RATE = 0.08;
 function YourSolution() {
 
   const [productData, setProductData] = useState([]);
-
+  const [currentPage, setCurrentPage] = useState(0);
+  const [maximumPage, setMaximumPage] = useState(0);
 
   useEffect(() => {
-    fetch(`${API_URL}?page=0`)
+    fetch(`${API_URL}?page=${currentPage}`)
     .then((response) => response.json())
     .then((body) => {
       setProductData(body.products)
-    
+      setMaximumPage(Math.ceil(body.count / 10) - 1)
     })
     .catch(err => console.log(err, 'ERROR'));
 
-  }, []);
+  }, [currentPage]);
+
+  const handleClick = (pageChange) => {
+    if (Math.abs(pageChange) === 1) {
+      setCurrentPage((current) => current + pageChange)
+    } else {
+   setCurrentPage(pageChange)
+    }
+  }
 
     return (
     <div className="App">
@@ -49,10 +58,10 @@ function YourSolution() {
             ))}
           </tbody>
       </table>
-      <button>First Page</button>
-      <button>Previous Page</button>
-      <button>Next Page</button>
-      <button>Last Page</button>
+      <button disabled={currentPage === 0} onClick={() => handleClick(0)}>First Page</button>
+      <button disabled={currentPage === 0} onClick={() => handleClick(-1)}> Previous Page</button>
+      <button disabled={currentPage === maximumPage} onClick={() => handleClick(1)}>Next Page</button>
+      <button disabled={currentPage === maximumPage} onClick={() => handleClick(maximumPage)}>Last Page</button>
     </div>
   );
 }
