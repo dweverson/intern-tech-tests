@@ -13,6 +13,11 @@ function YourSolution() {
   const [currentPage, setCurrentPage] = useState(0);
   const [maximumPage, setMaximumPage] = useState(0);
 
+  const britishPound = Intl.NumberFormat("en-UK", {
+    style: "currency",
+    currency: "GBP",
+})
+
   useEffect(() => {
     fetch(`${API_URL}?page=${currentPage}`)
     .then((response) => response.json())
@@ -52,8 +57,8 @@ function YourSolution() {
                 <td>{product.brand}</td>
                 <td>{product.name}</td>
                 <td>{product.quantitySold}</td>
-                <td>{product.soldPrice}</td>
-                <td>{product.costToBusiness}</td>
+                <td>{britishPound.format(product.soldPrice)}</td>
+                <td>{britishPound.format(product.costToBusiness)}</td>
               </tr>
             ))}
           </tbody>
