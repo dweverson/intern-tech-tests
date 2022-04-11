@@ -16,7 +16,7 @@ function YourSolution() {
   const britishPound = Intl.NumberFormat("en-UK", {
     style: "currency",
     currency: "GBP",
-})
+  })
 
   useEffect(() => {
     fetch(`${API_URL}?page=${currentPage}`)
@@ -33,8 +33,15 @@ function YourSolution() {
     if (Math.abs(pageChange) === 1) {
       setCurrentPage((current) => current + pageChange)
     } else {
-   setCurrentPage(pageChange)
+      setCurrentPage(pageChange)
     }
+  }
+
+  const profitCalc = (product) => {
+    const profitMargin = product.soldPrice - product.costToBusiness
+    const grossProfit = profitMargin * product.quantitySold 
+    const tax = product.quantitySold > 10 ? profitMargin * (product.quantitySold - 10) * TAX_RATE : 0;
+    return Math.round(((grossProfit - tax) + Number.EPSILON) * 100) / 100; 
   }
 
     return (
@@ -48,6 +55,7 @@ function YourSolution() {
           <th>Quantity Sold</th>
           <th>Sold Price</th>
           <th>Cost To Business</th>
+          <th>Profit after Tax</th>
         </tr>
         </thead>
           <tbody>
@@ -59,6 +67,7 @@ function YourSolution() {
                 <td>{product.quantitySold}</td>
                 <td>{britishPound.format(product.soldPrice)}</td>
                 <td>{britishPound.format(product.costToBusiness)}</td>
+                <td>{britishPound.format(profitCalc(product))}</td>
               </tr>
             ))}
           </tbody>
